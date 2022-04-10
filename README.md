@@ -10,5 +10,5 @@ Tips
 * Step4: In main.py, keep IS_TRAINING==True and choose the function train_part2.py (the 31th line in main.py), and then run main.py.
 
 #### To test with the pre-trained model:<br>
-* Step1: download [feature dataset] which includes feature maps from ![](http://latex.codecogs.com/svg.latex?I_e).
+* Step1: download [feature dataset] which includes feature maps from ![1](http://latex.codecogs.com/svg.latex?I_e).
 * Step2: In main.py, keep IS_TRAINING==False, and run main.py.
