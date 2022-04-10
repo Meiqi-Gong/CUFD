@@ -3,4 +3,5 @@ Code of CUFD: An encoder-decoder network for visible and infrared image fusion b
 
 # Tips
 Large files should be downloaded separately, including the following files:
-#For training:
+
+For training:
