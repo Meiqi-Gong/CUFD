@@ -53,7 +53,7 @@ class DenseFuseNet(object):
         target_features1 = tf.concat([f11,f12,f13,f14],axis=3)
         self.target_features1 = target_features1
         _f = self.m_decoder.decode(target_features1)
-        return f11, f12, f13, f14, _f, img
+        return f11, f12, f13, f14, _f
 
     def transform_recons_part2(self, f11,f12,f13,f14,f21,f22,f23,f24):
         f11 = f11 / (tf.reduce_max(f11) + EPSILON)
