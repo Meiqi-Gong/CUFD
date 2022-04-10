@@ -34,21 +34,19 @@ def main():
         path_TNO40 = '/data/gmq/exe/test_imgs/TNO40/'
         Time=[]
 
-        for i in range(41):
-            if i==23:
-            # if i>=9:
-                index = i + 1
-                infrared = path_TNO40 + 'IR/' + str(index) + '.bmp'
-                visible = path_TNO40 + 'VIS/' + str(index) + '.bmp'
-                # infrared = path_Road + '/IR/' + str(index) + '.jpg'
-                # visible = path_Road + '/VIS/' + str(index) + '.jpg'
-                savepath = './results/'
-                begin = time.time()
-                generate(infrared, visible, model_path_1, model_path_2, index, output_path=savepath)
-                end = time.time()
-                Time.append(end-begin)
-                print("pic_num:%s" % index)
-                print("Time: mean:%s, std: %s" % (np.mean(Time), np.std(Time)))
+        for i in range(10):
+            index = i + 1
+            infrared = path_TNO40 + 'IR/' + str(index) + '.bmp'
+            visible = path_TNO40 + 'VIS/' + str(index) + '.bmp'
+            # infrared = path_Road + '/IR/' + str(index) + '.jpg'
+            # visible = path_Road + '/VIS/' + str(index) + '.jpg'
+            savepath = './results/'
+            begin = time.time()
+            generate(infrared, visible, model_path_1, model_path_2, index, output_path=savepath)
+            end = time.time()
+            Time.append(end-begin)
+            print("pic_num:%s" % index)
+            print("Time: mean:%s, std: %s" % (np.mean(Time), np.std(Time)))
 
 
 if __name__ == '__main__':
