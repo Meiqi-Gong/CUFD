@@ -6,7 +6,6 @@ Tips
 Large files should be downloaded separately, including the following files:
 
 #### To train:<br>
-* Step1: [Training dataset]<br>
-If you want to create your own training dataset, run crop.py.
+* Step1: downlad [Training dataset]<br> or create your own training dataset by running crop.py.
 
 #### To test with the pre-trained model:<br>
