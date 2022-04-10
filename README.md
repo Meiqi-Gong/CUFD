@@ -7,4 +7,4 @@ Large files should be downloaded separately, including the following files:
 
 #### For training:<br>
 * [Training dataset]<br>
-if you wanto create your own training dataset, please run crop.py.
+if you want to create your own training dataset, please run crop.py.
