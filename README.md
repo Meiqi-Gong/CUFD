@@ -15,3 +15,13 @@ Tips
 
 If this work is helpful to you, please cite it as:
 ```
+@article{xu2022cufd,
+  title={CUFD: An encoder--decoder network for visible and infrared image fusion based on common and unique feature decomposition},
+  author={Xu, Han and Gong, Meiqi and Tian, Xin and Huang, Jun and Ma, Jiayi},
+  journal={Computer Vision and Image Understanding},
+  pages={103407},
+  year={2022},
+  publisher={Elsevier}
+}
+```
+If you have any question, please email to me (meiqigong@whu.edu.cn).
