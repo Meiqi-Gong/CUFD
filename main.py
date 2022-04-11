@@ -4,7 +4,6 @@ from __future__ import print_function
 
 from train_part1 import train_part1
 from train_part2 import train_part2
-from generate_param import generate_part1
 from generate import generate
 import h5py
 import time
@@ -27,8 +26,7 @@ def main():
     if IS_TRAINING:
         # print(('\nBegin to train the network ...\n'))
         # train_part1(sources, MODEL_SAVE_PATH, EPOCHES, BATCH_SIZE, logging_period=LOGGING)
-        # generate_part1(sources, model_path_1, BATCH_SIZE)
-        train_part2(sources, MODEL_SAVE_PATH, EPOCHES, BATCH_SIZE, logging_period=LOGGING)
+        train_part2(sources, model_path_1, MODEL_SAVE_PATH, EPOCHES, BATCH_SIZE, logging_period=LOGGING)
     else:
         path_Road = '/data/gmq/dense/RoadScene'
         path_TNO40 = '/data/gmq/exe/test_imgs/TNO40/'
