@@ -4,7 +4,7 @@ Code of CUFD: An encoder-decoder network for visible and infrared image fusion b
 Tips
 ---------
 #### To train:<br>
-* Step1: download [Training dataset](https://pan.baidu.com/s/1yKJZu15aeSzqEjMjn-6Kag?pwd=0v11) or create your own training dataset by [*code*](https://github.com/hanna-xu/utils).
+* Step1: download [Training dataset](https://pan.baidu.com/s/1yKJZu15aeSzqEjMjn-6Kag?pwd=0v11) or create your own training dataset by [code](https://github.com/hanna-xu/utils).
 * Step2: In main.py, keep `IS_TRAINING==True` and choose the function train_part1.py (the 29th line in main.py), and then run main.py.
 * Step3: In main.py, keep `IS_TRAINING==True` and choose the function train_part2.py (the 31th line in main.py), and then run main.py.
 
