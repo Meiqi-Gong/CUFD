@@ -25,67 +25,11 @@ DECAY_RATE = 0.9
 eps = 1e-8
 
 
-def train_part2(source_imgs, save_path, EPOCHES_set, BATCH_SIZE, logging_period=1):
+def train_part2(source_imgs, model_path, save_path, EPOCHES_set, BATCH_SIZE, logging_period=1):
     from datetime import datetime
     start_time = datetime.now()
     EPOCHS = EPOCHES_set
     print('Epoches: %d, Batch_size: %d' % (EPOCHS, BATCH_SIZE))
-
-    g1 = h5py.File('feature/f21.h5', 'r')
-    for key in g1.keys():
-        print(g1[key].name)
-    t_f21_1 = g1['/f21']
-    t_f21_add1=g1['/f21_101_200']
-    t_f21_add2=g1['/f21_201_241']
-
-    g2 = h5py.File('feature/f22.h5', 'r')
-    for key in g2.keys():
-        print(g2[key].name)
-    t_f22_1 = g2['/f22']
-    t_f22_add1 = g2['/f22_101_200']
-    t_f22_add2 = g2['/f22_201_241']
-
-    g3 = h5py.File('feature/f23.h5', 'r')
-    for key in g3.keys():
-        print(g3[key].name)
-    t_f23_1 = g3['/f23']
-    t_f23_add1 = g3['/f23_101_200']
-    t_f23_add2 = g3['/f23_201_241']
-
-    g4 = h5py.File('feature/f24.h5', 'r')
-    for key in g4.keys():
-        print(g4[key].name)
-    t_f24_1 = g4['/f24']
-    t_f24_add1 = g4['/f24_101_200']
-    t_f24_add2 = g4['/f24_201_241']
-
-    g5 = h5py.File('feature/f11.h5', 'r')
-    for key in g4.keys():
-        print(g4[key].name)
-    t_f11_1 = g5['/f11']
-    t_f11_add1 = g5['/f11_101_200']
-    t_f11_add2 = g5['/f11_201_241']
-
-    g6 = h5py.File('feature/f12.h5', 'r')
-    for key in g6.keys():
-        print(g6[key].name)
-    t_f12_1 = g6['/f12']
-    t_f12_add1 = g6['/f12_101_200']
-    t_f12_add2 = g6['/f12_201_241']
-
-    g7 = h5py.File('feature/f13.h5', 'r')
-    for key in g7.keys():
-        print(g7[key].name)
-    t_f13_1 = g7['/f13']
-    t_f13_add1 = g7['/f13_101_200']
-    t_f13_add2 = g7['/f13_201_241']
-
-    g8 = h5py.File('feature/f14.h5', 'r')
-    for key in g8.keys():
-        print(g8[key].name)
-    t_f14_1 = g8['/f14']
-    t_f14_add1 = g8['/f14_101_200']
-    t_f14_add2 = g8['/f14_201_241']
 
     num_imgs = source_imgs.shape[0]
     mod = num_imgs % BATCH_SIZE
@@ -100,16 +44,13 @@ def train_part2(source_imgs, save_path, EPOCHES_set, BATCH_SIZE, logging_period=
     with tf.Graph().as_default(), tf.Session() as sess:
         SOURCE_VIS = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 1), name='SOURCE_VIS')
         SOURCE_IR = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 1), name='SOURCE_IR')
-        f11 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f11')
-        f12 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f12')
-        f13 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f13')
-        f14 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f14')
-        f21 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f21')
-        f22 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f22')
-        f23 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f23')
-        f24 = tf.placeholder(tf.float32, shape=(BATCH_SIZE, patch_size, patch_size, 32), name='f24')
-
         dfn = DenseFuseNet("DenseFuseNet")
+        f11, f12, f13, f14, f21, f22, f23, f24 = dfn.transform_test_part1(SOURCE_VIS, SOURCE_IR)
+        variables_to_restore = tf.contrib.framework.get_variables_to_restore(
+            include=['m_encoder', 'DenseFuseNet/m_encoder'])
+        part1_saver = tf.train.Saver(variables_to_restore)
+        part1_saver.restore(sess, model_path)
+
         cu1,cu2,cu3,cu4,_f11,_f12,_f13,_f14,_f21,_f22,_f23,_f24= dfn.transform_recons_part2(f11,f12,f13,f14,f21,f22,f23,f24)
         i_f11 = tf.reduce_sum(_f11, axis=3)
         i_f11 = tf.reshape(i_f11, [84, 84, 84, 1])
@@ -179,24 +120,25 @@ def train_part2(source_imgs, save_path, EPOCHES_set, BATCH_SIZE, logging_period=
                 IR_batch = source_imgs[batch * BATCH_SIZE:(batch * BATCH_SIZE + BATCH_SIZE), :, :, 1]
                 VIS_batch = np.expand_dims(VIS_batch, -1)
                 IR_batch = np.expand_dims(IR_batch, -1)
-                if batch<=100:
-                    FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
-                                 f21: t_f21_1[batch, :, :, :, :], f22: t_f22_1[batch, :, :, :, :],
-                                 f23: t_f23_1[batch, :, :, :, :], f24: t_f24_1[batch, :, :, :, :],
-                                 f11: t_f11_1[batch, :, :, :, :], f12: t_f12_1[batch, :, :, :, :],
-                                 f13: t_f13_1[batch, :, :, :, :], f14: t_f14_1[batch, :, :, :, :]}
-                elif batch <= 200:
-                    FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
-                                 f21: t_f21_add1[batch-101, :, :, :, :], f22: t_f22_add1[batch-101, :, :, :, :],
-                                 f23: t_f23_add1[batch-101, :, :, :, :], f24: t_f24_add1[batch-101, :, :, :, :],
-                                 f11: t_f11_add1[batch-101, :, :, :, :], f12: t_f12_add1[batch-101, :, :, :, :],
-                                 f13: t_f13_add1[batch-101, :, :, :, :], f14: t_f14_add1[batch-101, :, :, :, :]}
-                else:
-                    FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
-                                 f21: t_f21_add2[batch-201, :, :, :, :], f22: t_f22_add2[batch-201, :, :, :, :],
-                                 f23: t_f23_add2[batch-201, :, :, :, :], f24: t_f24_add2[batch-201, :, :, :, :],
-                                 f11: t_f11_add2[batch-201, :, :, :, :], f12: t_f12_add2[batch-201, :, :, :, :],
-                                 f13: t_f13_add2[batch-201, :, :, :, :], f14: t_f14_add2[batch-201, :, :, :, :]}
+                FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch}
+                # if batch<=100:
+                #     FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
+                #                  f21: t_f21_1[batch, :, :, :, :], f22: t_f22_1[batch, :, :, :, :],
+                #                  f23: t_f23_1[batch, :, :, :, :], f24: t_f24_1[batch, :, :, :, :],
+                #                  f11: t_f11_1[batch, :, :, :, :], f12: t_f12_1[batch, :, :, :, :],
+                #                  f13: t_f13_1[batch, :, :, :, :], f14: t_f14_1[batch, :, :, :, :]}
+                # elif batch <= 200:
+                #     FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
+                #                  f21: t_f21_add1[batch-101, :, :, :, :], f22: t_f22_add1[batch-101, :, :, :, :],
+                #                  f23: t_f23_add1[batch-101, :, :, :, :], f24: t_f24_add1[batch-101, :, :, :, :],
+                #                  f11: t_f11_add1[batch-101, :, :, :, :], f12: t_f12_add1[batch-101, :, :, :, :],
+                #                  f13: t_f13_add1[batch-101, :, :, :, :], f14: t_f14_add1[batch-101, :, :, :, :]}
+                # else:
+                #     FEED_DICT = {SOURCE_VIS: VIS_batch, SOURCE_IR: IR_batch,
+                #                  f21: t_f21_add2[batch-201, :, :, :, :], f22: t_f22_add2[batch-201, :, :, :, :],
+                #                  f23: t_f23_add2[batch-201, :, :, :, :], f24: t_f24_add2[batch-201, :, :, :, :],
+                #                  f11: t_f11_add2[batch-201, :, :, :, :], f12: t_f12_add2[batch-201, :, :, :, :],
+                #                  f13: t_f13_add2[batch-201, :, :, :, :], f14: t_f14_add2[batch-201, :, :, :, :]}
 
                 id = 0
                 sess.run(train_op1, feed_dict=FEED_DICT)
