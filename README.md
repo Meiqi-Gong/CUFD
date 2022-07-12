@@ -1,5 +1,5 @@
 # CUFD
-Code of CUFD: An encoder-decoder network for visible and infrared image fusion based on common and unique feature decomposition
+Code of [CUFD: An encoder-decoder network for visible and infrared image fusion based on common and unique feature decomposition](https://www.sciencedirect.com/science/article/pii/S1077314222000352)
 
 Tips
 ---------
